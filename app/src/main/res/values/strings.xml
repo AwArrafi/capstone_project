@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Capstone Project</string>
+
+
+    <string name="greetings">Hello, Sofia</string>
+    <string name="looking_something">Looking for something?</string>
+
+    <string name="home">Home</string>
+    <string name="scan">Scan</string>
+    <string name="favorites">Favorites</string>
+    <string name="menu">Menu</string>
+    <string name="profile_button">Profile Button</string>
+
+    <string name="product_image">Produk</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,28 @@
+<!-- res/menu/bottom_navigation_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:fontFamily="@font/poppins_regular"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/navigation_scan"
+        android:icon="@drawable/ic_scan"
+        android:fontFamily="@font/poppins_regular"
+        android:title="@string/scan" />
+
+    <item
+        android:id="@+id/navigation_favorites"
+        android:icon="@drawable/ic_favorite"
+        android:fontFamily="@font/poppins_regular"
+        android:title="@string/favorites" />
+
+    <item
+        android:id="@+id/navigation_menu"
+        android:icon="@drawable/ic_menu"
+        android:fontFamily="@font/poppins_regular"
+        android:title="@string/menu" />
+
+</menu>
