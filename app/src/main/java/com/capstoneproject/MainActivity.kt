@@ -30,6 +30,10 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(MenuFragment())
                     true
                 }
+                R.id.navigation_favorites -> {
+                    replaceFragment(FavouriteFragment())
+                    true
+                }
                 else -> false
             }
         }
