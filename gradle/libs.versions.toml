@@ -1,6 +1,7 @@
 [versions]
-agp = "8.5.1"
-kotlin = "1.9.0"
+agp = "8.5.2"
+cameraView = "1.5.0"
+kotlin = "1.9.22"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,8 +13,13 @@ constraintlayout = "2.2.0"
 materialVersion = "1.12.0"
 navigationFragmentKtx = "2.8.4"
 navigationUiKtx = "2.8.4"
+cameraxVersion = "1.4.0"
 
 [libraries]
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraxVersion" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraView" }
+camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraxVersion" }
+camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraxVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
