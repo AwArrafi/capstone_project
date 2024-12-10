@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.capstoneproject.R
 
-class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SearchAdapter(private var results: List<String>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
-    private var results = listOf<String>()
+    // Remove the initialization of 'results' here since it's now provided via the constructor
+    // private var results = listOf<String>()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val resultTextView: TextView = itemView.findViewById(R.id.itemTitle)

@@ -14,7 +14,7 @@ import com.google.android.material.search.SearchView
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchView: SearchView
-    private lateinit var resultsRecyclerView: RecyclerView
+    private lateinit var menuRecyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,15 +23,15 @@ class SearchActivity : AppCompatActivity() {
 
         // Initialize components
         searchView = findViewById(R.id.searchView)
-        resultsRecyclerView = findViewById(R.id.resultsRecyclerView)
+        menuRecyclerView = findViewById(R.id.menuRecyclerView)
 
         // Setup RecyclerView
         val layoutManager = LinearLayoutManager(this)
-        resultsRecyclerView.layoutManager = layoutManager
+        menuRecyclerView.layoutManager = layoutManager
 
-        // Setup adapter for search results (dummy data example)
-        searchAdapter = SearchAdapter()
-        resultsRecyclerView.adapter = searchAdapter
+        // Setup adapter
+        searchAdapter = SearchAdapter(getDefaultMenuItems()) // Initialize with default menu items
+        menuRecyclerView.adapter = searchAdapter
 
         // Add TextWatcher to detect changes in search input
         searchView.getEditText()?.addTextChangedListener(object : TextWatcher {
@@ -42,10 +42,10 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // Update results based on user input
                 if (!charSequence.isNullOrEmpty()) {
-                    // Example: search and display results (dummy data or data from DB)
-                    searchAdapter.updateResults(listOf("Item 1", "Item 2", "Item 3"))
+                    val filteredResults = searchMenuItems(charSequence.toString())
+                    searchAdapter.updateResults(filteredResults) // Show search results
                 } else {
-                    searchAdapter.updateResults(emptyList()) // Clear results when search is empty
+                    searchAdapter.updateResults(getDefaultMenuItems()) // Show default menu items
                 }
             }
 
@@ -63,5 +63,16 @@ class SearchActivity : AppCompatActivity() {
             searchView.hide()
             false
         }
+    }
+
+    // Function to get default menu items (dummy data for now)
+    private fun getDefaultMenuItems(): List<String> {
+        return listOf("Menu 1", "Menu 2", "Menu 3", "Menu 4", "Menu 5")
+    }
+
+    // Function to search menu items based on query
+    private fun searchMenuItems(query: String): List<String> {
+        val allMenuItems = getDefaultMenuItems()
+        return allMenuItems.filter { it.contains(query, ignoreCase = true) }
     }
 }

@@ -24,4 +24,7 @@
     <string name="name">Name\n</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="login_instead">Already have an account? Login here</string>
+    <string name="Fruits">Fruits</string>
+    <string name="Vegetables">Vegetables</string>
+    <string name="Others">Others</string>
 </resources>

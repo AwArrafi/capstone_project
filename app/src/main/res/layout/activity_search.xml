@@ -6,19 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Scrollable content such as RecyclerView -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/searchbar_scrolling_view_behavior">
-
-        <!-- Screen content (RecyclerView for results) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resultsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </androidx.core.widget.NestedScrollView>
-
     <!-- AppBar containing the SearchBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -34,7 +21,38 @@
             android:iconifiedByDefault="false"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- SearchView widget, anchored to the SearchBar -->
+    <!-- Scrollable content for Item Cards -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- List of Item Cards -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discover Items"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/menuRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_card"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- SearchView widget -->
     <com.google.android.material.search.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
@@ -43,12 +61,13 @@
         android:hint="Search"
         app:layout_anchor="@id/search_bar">
 
-        <!-- Search results or suggestions -->
+        <!-- RecyclerView for Search Results -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResultsRecyclerView"
-            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            tools:listitem="@layout/item_card" />
     </com.google.android.material.search.SearchView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
