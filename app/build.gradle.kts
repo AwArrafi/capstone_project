@@ -43,13 +43,11 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-
-
     //Material Design
+    implementation (libs.material)
     implementation (libs.material.v140)
 
     //Navigation
@@ -61,8 +59,31 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
 
+    // Retrofit untuk API calls
+    implementation (libs.retrofit)
 
+    // Gson converter untuk Retrofit
+    implementation (libs.converter.gson)
 
+    // Kotlin Coroutines untuk asynchronous programming
+    implementation (libs.kotlinx.coroutines.android)
+
+    // Lifecycle for coroutine scope in Activity/Fragment
+    implementation (libs.androidx.lifecycle.runtime.ktx)
+
+    // OkHttp untuk log network requests (optional, but useful for debugging)
+    implementation (libs.logging.interceptor)
+
+    implementation (libs.androidx.datastore.preferences)
+
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation (libs.androidx.lifecycle.viewmodel.savedstate)
+
+    implementation (libs.hilt.android)
+    implementation (libs.androidx.hilt.lifecycle.viewmodel)
+
+    implementation (libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

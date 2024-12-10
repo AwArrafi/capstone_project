@@ -1,4 +1,4 @@
-package com.capstoneproject
+package com.capstoneproject.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstoneproject.R
 import com.capstoneproject.adapter.FavouriteAdapter
 import com.capstoneproject.adapter.FavouriteItem
 import com.capstoneproject.databinding.FragmentFavouriteBinding

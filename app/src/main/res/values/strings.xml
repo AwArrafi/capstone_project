@@ -15,4 +15,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="capture">Capture</string>
+    <string name="forget_password">Forgot your password?</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="flavorscape">FlavorScape</string>
+    <string name="name">Name\n</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="login_instead">Already have an account? Login here</string>
 </resources>
