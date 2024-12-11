@@ -1,5 +1,6 @@
 package com.capstoneproject.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +17,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.capstoneproject.databinding.ActivityScanBinding
 import com.capstoneproject.helper.ImageClassifierHelper
-import com.capstoneproject.helper.ImageClassifierHelper.Category
-import java.text.NumberFormat
 import java.util.concurrent.Executors
 
 class ScanActivity : AppCompatActivity() {
@@ -25,6 +24,7 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScanBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private var lastDetectedLabel: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +32,19 @@ class ScanActivity : AppCompatActivity() {
         // Setup ViewBinding
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.captureButton.setOnClickListener {
+            navigateToResultActivity()
+        }
     }
 
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         hideSystemUI()
         startCamera()
     }
 
     private fun startCamera() {
-        // Initialize ImageClassifierHelper
         imageClassifierHelper = ImageClassifierHelper(
             context = this,
             classifierListener = object : ImageClassifierHelper.ClassifierListener {
@@ -51,21 +54,26 @@ class ScanActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onResults(results: List<Category>?, inferenceTime: Long) {
+                override fun onResults(results: List<ImageClassifierHelper.Category>?, inferenceTime: Long) {
                     runOnUiThread {
-                        results?.let { categories ->
-                            if (categories.isNotEmpty()) {
-                                val sortedCategories = categories.sortedByDescending { it.score }
-                                val displayResult = sortedCategories.joinToString("\n") {
-                                    "${it.label} " + NumberFormat.getPercentInstance()
-                                        .format(it.score).trim()
-                                }
-                                binding.tvResult.text = displayResult
-                                binding.tvInferenceTime.text = "$inferenceTime ms"
-                            } else {
-                                binding.tvResult.text = ""
-                                binding.tvInferenceTime.text = ""
+                        if (results != null && results.isNotEmpty()) {
+                            val detectedLabel = results.maxByOrNull { it.score }?.label ?: "Unknown"
+                            lastDetectedLabel = detectedLabel
+
+                            // Log the detected label
+                            Log.d(TAG, "Detected: $detectedLabel")
+
+                            // Update overlay with bounding boxes (mock positions used here)
+                            val boxes = results.mapIndexed { index, category ->
+                                OverlayView.BoundingBox(
+                                    left = 50f * (index + 1),
+                                    top = 100f * (index + 1),
+                                    right = 200f * (index + 1),
+                                    bottom = 250f * (index + 1),
+                                    label = category.label
+                                )
                             }
+                            binding.overlayView.updateBoxes(boxes)
                         }
                     }
                 }
@@ -75,7 +83,6 @@ class ScanActivity : AppCompatActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
-            // Configure resolution and image analysis
             val resolutionSelector = ResolutionSelector.Builder()
                 .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                 .build()
@@ -88,7 +95,7 @@ class ScanActivity : AppCompatActivity() {
                 .build()
 
             imageAnalyzer.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
-                imageClassifierHelper.classifyImage(image) // Send image to ImageClassifierHelper
+                imageClassifierHelper.classifyImage(image)
             }
 
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -105,14 +112,17 @@ class ScanActivity : AppCompatActivity() {
                     imageAnalyzer
                 )
             } catch (exc: Exception) {
-                Toast.makeText(
-                    this@ScanActivity,
-                    "Failed to open camera.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Failed to start camera.", Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "startCamera: ${exc.message}")
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun navigateToResultActivity() {
+        val detectedResult = lastDetectedLabel ?: "No Result"
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra("RESULT", detectedResult)
+        startActivity(intent)
     }
 
     private fun hideSystemUI() {
