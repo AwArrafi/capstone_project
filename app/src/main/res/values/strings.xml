@@ -27,4 +27,6 @@
     <string name="Fruits">Fruits</string>
     <string name="Vegetables">Vegetables</string>
     <string name="Others">Others</string>
+    <string name="profile">Profile</string>
+    <string name="image_classifier_failed">Failed to detect</string>
 </resources>

@@ -1,23 +1,30 @@
 package com.capstoneproject.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowInsets
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.capstoneproject.databinding.ActivityScanBinding
-import java.util.concurrent.ExecutorService
+import com.capstoneproject.helper.ImageClassifierHelper
+import com.capstoneproject.helper.ImageClassifierHelper.Category
+import java.text.NumberFormat
 import java.util.concurrent.Executors
 
 class ScanActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityScanBinding
-    private lateinit var cameraExecutor: ExecutorService
-    private var imageCapture: ImageCapture? = null
+    private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    private lateinit var imageClassifierHelper: ImageClassifierHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,51 +32,103 @@ class ScanActivity : AppCompatActivity() {
         // Setup ViewBinding
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
-        // Initialize Camera Executor
-        cameraExecutor = Executors.newSingleThreadExecutor()
-
-        // Start Camera
+    public override fun onResume() {
+        super.onResume()
+        hideSystemUI()
         startCamera()
     }
 
     private fun startCamera() {
+        // Initialize ImageClassifierHelper
+        imageClassifierHelper = ImageClassifierHelper(
+            context = this,
+            classifierListener = object : ImageClassifierHelper.ClassifierListener {
+                override fun onError(error: String) {
+                    runOnUiThread {
+                        Toast.makeText(this@ScanActivity, error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onResults(results: List<Category>?, inferenceTime: Long) {
+                    runOnUiThread {
+                        results?.let { categories ->
+                            if (categories.isNotEmpty()) {
+                                val sortedCategories = categories.sortedByDescending { it.score }
+                                val displayResult = sortedCategories.joinToString("\n") {
+                                    "${it.label} " + NumberFormat.getPercentInstance()
+                                        .format(it.score).trim()
+                                }
+                                binding.tvResult.text = displayResult
+                                binding.tvInferenceTime.text = "$inferenceTime ms"
+                            } else {
+                                binding.tvResult.text = ""
+                                binding.tvInferenceTime.text = ""
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            // Setup Preview
-            val preview = Preview.Builder()
+            // Configure resolution and image analysis
+            val resolutionSelector = ResolutionSelector.Builder()
+                .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                 .build()
-                .also {
-                    it.surfaceProvider = binding.previewView.surfaceProvider
-                }
 
-            // Setup CameraSelector
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setResolutionSelector(resolutionSelector)
+                .setTargetRotation(binding.previewView.display.rotation)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                .build()
 
-            // Setup ImageCapture
-            imageCapture = ImageCapture.Builder().build()
+            imageAnalyzer.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
+                imageClassifierHelper.classifyImage(image) // Send image to ImageClassifierHelper
+            }
+
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(binding.previewView.surfaceProvider)
+            }
 
             try {
-                // Bind to lifecycle
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
-                    imageCapture
+                    imageAnalyzer
                 )
             } catch (exc: Exception) {
-                Toast.makeText(this, "Failed to open camera.", Toast.LENGTH_SHORT).show()
-                Log.e("ScanActivity", "startCamera: ${exc.message}")
+                Toast.makeText(
+                    this@ScanActivity,
+                    "Failed to open camera.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e(TAG, "startCamera: ${exc.message}")
             }
         }, ContextCompat.getMainExecutor(this))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
+    private fun hideSystemUI() {
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+        supportActionBar?.hide()
+    }
+
+    companion object {
+        private const val TAG = "ScanActivity"
     }
 }

@@ -32,7 +32,8 @@ class HomeFragment : Fragment() {
 
         // OnClickListener for profileButton
         binding.profileButton.setOnClickListener {
-            // Action when profileButton is clicked (e.g., open user profile screen)
+            val intent = Intent(requireContext(), ProfileActivity::class.java)
+            startActivity(intent)
         }
 
         // OnClickListener to trigger SearchActivity
@@ -45,7 +46,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // Dummy data untuk rekomendasi
         val recommendations = listOf(
             RecommendationAdapter.RecommendationItem(
                 title = "Telur",
@@ -59,12 +59,11 @@ class HomeFragment : Fragment() {
             ),
             RecommendationAdapter.RecommendationItem(
                 title = "Pangsit",
-                description = "Cheesy and delicious pizza.",
+                description = "Cheesy and delicious pangsit.",
                 imageRes = R.drawable.pangsit
             )
         )
 
-        // Atur RecyclerView dengan Horizontal LayoutManager
         val adapter = RecommendationAdapter(recommendations)
         binding.recommendationRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

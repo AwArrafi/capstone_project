@@ -19,6 +19,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        mlModelBinding = true
     }
 
     buildTypes {
@@ -55,6 +56,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     //Camera X
+    implementation ("androidx.camera:camera-core:1.4.0")
     implementation(libs.androidx.camera.camera2)
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
@@ -75,7 +77,6 @@ dependencies {
     implementation (libs.logging.interceptor)
 
     implementation (libs.androidx.datastore.preferences)
-
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.androidx.lifecycle.livedata.ktx)
     implementation (libs.androidx.lifecycle.viewmodel.savedstate)
@@ -84,8 +85,17 @@ dependencies {
     implementation (libs.androidx.hilt.lifecycle.viewmodel)
 
     implementation (libs.glide)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation(libs.tensorflow.lite.gpu)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //Model Ml
+    implementation ("org.tensorflow:tensorflow-lite:2.12.0")
+    implementation ("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
+    implementation ("org.tensorflow:tensorflow-lite-support:0.4.3")
+
 }
