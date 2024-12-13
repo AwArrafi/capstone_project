@@ -16,7 +16,7 @@ class ImageClassifierHelper(
 ) {
 
     private var model: Model? = null
-
+    private val THRESHOLD = 0.2f
     init {
         setupModel()
     }
@@ -38,7 +38,7 @@ class ImageClassifierHelper(
         try {
 
             val bitmap = toBitmap(image)
-            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, true)
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
 
 
             val tensorImage = TensorImage(DataType.FLOAT32)
@@ -48,7 +48,7 @@ class ImageClassifierHelper(
             Log.d("Preprocessing", "Expected size: 270000 bytes")
 
             val inputFeature0 = TensorBuffer.createFixedSize(
-                intArrayOf(1, 150, 150, 3), DataType.FLOAT32
+                intArrayOf(1, 224, 224, 3), DataType.FLOAT32
             )
             inputFeature0.loadBuffer(tensorImage.buffer)
 
@@ -57,13 +57,11 @@ class ImageClassifierHelper(
             val outputs = model?.process(inputFeature0)
             inferenceTime = SystemClock.uptimeMillis() - inferenceTime
 
-            // Ekstraksi hasil output
             val outputFeature0 = outputs?.outputFeature0AsTensorBuffer
             val probabilities = outputFeature0?.floatArray
 
-            // Kirim hasil ke listener
             if (probabilities != null) {
-                val labels = listOf("Carrot", "Cabbage", "Papaya","Beans", "Unknown")
+                val labels = listOf("Cabbage", "Carrot", "Papaya","Cauliflower","Unknown")
                 val results = probabilities.mapIndexed { index, prob ->
                     Category(labels.getOrElse(index) { "Unknown" }, prob)
                 }.sortedByDescending { it.score }

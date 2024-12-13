@@ -1,5 +1,6 @@
 package com.capstoneproject.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstoneproject.R
 import com.capstoneproject.adapter.MenuAdapter
-import com.capstoneproject.adapter.MenuItem
 import com.capstoneproject.databinding.FragmentMenuBinding
+import com.capstoneproject.model.MenuItem
 
 class MenuFragment : Fragment() {
 
@@ -29,14 +30,22 @@ class MenuFragment : Fragment() {
 
         // Data untuk menu
         val menuItems = listOf(
-            MenuItem(R.drawable.telur, "Telur", "Telur segar dari peternakan"),
-            MenuItem(R.drawable.pangsit, "Pangsit", "Pangsit renyah dengan isian ayam"),
-            MenuItem(R.drawable.fruits, "Buah-buahan", "Buah segar untuk kebutuhan sehari-hari")
+            MenuItem(R.drawable.telur, "Eggs", "Freshly cooked eggs"),
+            MenuItem(R.drawable.pangsit, "Dumplings", "Soft and crispy dumplings"),
+            MenuItem(R.drawable.fruits, "Fruits", "Fresh and juicy fruits")
         )
 
-        // Setup RecyclerView
+        // Setup RecyclerView dengan Adapter dan listener klik
         binding.recyclerViewMenu.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewMenu.adapter = MenuAdapter(menuItems)
+        binding.recyclerViewMenu.adapter = MenuAdapter(menuItems) { menuItem ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra("menu_item", menuItem)
+            startActivity(intent)
+        }
+        binding.profileButton.setOnClickListener {
+            val intent = Intent(requireContext(), ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {

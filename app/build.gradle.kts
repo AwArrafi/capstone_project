@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -72,8 +74,6 @@ dependencies {
 
     // Lifecycle for coroutine scope in Activity/Fragment
     implementation (libs.androidx.lifecycle.runtime.ktx)
-
-    // OkHttp untuk log network requests (optional, but useful for debugging)
     implementation (libs.logging.interceptor)
 
     implementation (libs.androidx.datastore.preferences)
@@ -94,8 +94,11 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //Model Ml
-    implementation ("org.tensorflow:tensorflow-lite:2.12.0")
+    implementation ("org.tensorflow:tensorflow-lite:2.13.0")
     implementation ("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
-    implementation ("org.tensorflow:tensorflow-lite-support:0.4.3")
+    implementation ("org.tensorflow:tensorflow-lite-support:0.4.4")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-ml-modeldownloader:25.0.1")
+    implementation("com.google.firebase:firebase-analytics")
 }

@@ -29,4 +29,11 @@
     <string name="Others">Others</string>
     <string name="profile">Profile</string>
     <string name="image_classifier_failed">Failed to detect</string>
+    <string name="detail_menu">Details</string>
+
+    <string name="detail_header">Detail Menu</string>
+    <string name="ingredients_header">Ingredients</string>
+    <string name="methods_header">Methods</string>
+
+
 </resources>

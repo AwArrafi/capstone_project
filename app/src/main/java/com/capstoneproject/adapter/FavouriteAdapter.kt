@@ -1,35 +1,43 @@
 package com.capstoneproject.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.capstoneproject.R
+import com.capstoneproject.databinding.ItemCardBinding
+import com.capstoneproject.model.FavouriteItem
+import com.capstoneproject.ui.DetailActivity
 
-data class FavouriteItem(val imageResId: Int, val title: String, val description: String)
+class FavouriteAdapter(
+    private val context: Context,
+    private val items: List<FavouriteItem>,
+    private val onItemClick: (FavouriteItem) -> Unit // Click listener passed as a parameter
+) : RecyclerView.Adapter<FavouriteAdapter.FavouriteViewHolder>() {
 
-class FavouriteAdapter(private val items: List<FavouriteItem>) :
-    RecyclerView.Adapter<FavouriteAdapter.FavouriteViewHolder>() {
+    inner class FavouriteViewHolder(private val binding: ItemCardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: FavouriteItem) {
+            binding.itemImage.setImageResource(item.imageResId)
+            binding.itemTitle.text = item.title
+            binding.itemDescription.text = item.description
 
-    inner class FavouriteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemImage: ImageView = view.findViewById(R.id.itemImage)
-        val itemTitle: TextView = view.findViewById(R.id.itemTitle)
-        val itemDescription: TextView = view.findViewById(R.id.itemDescription)
+            // Set up the click listener
+            binding.root.setOnClickListener {
+                // Passing the FavouriteItem via Intent to DetailActivity
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("favourite_item", item)  // Passing FavouriteItem
+                context.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_card, parent, false)
-        return FavouriteViewHolder(view)
+        val binding = ItemCardBinding.inflate(LayoutInflater.from(context), parent, false)
+        return FavouriteViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: FavouriteViewHolder, position: Int) {
-        val item = items[position]
-        holder.itemImage.setImageResource(item.imageResId)
-        holder.itemTitle.text = item.title
-        holder.itemDescription.text = item.description
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int = items.size

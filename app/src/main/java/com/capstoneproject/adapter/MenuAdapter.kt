@@ -7,16 +7,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.capstoneproject.R
+import com.capstoneproject.model.MenuItem
 
-data class MenuItem(val imageResId: Int, val title: String, val description: String)
 
-class MenuAdapter(private val items: List<MenuItem>) :
-    RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
+class MenuAdapter(
+    private val items: List<MenuItem>,
+    private val onItemClick: (MenuItem) -> Unit
+) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     inner class MenuViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemImage: ImageView = view.findViewById(R.id.itemImage)
         val itemTitle: TextView = view.findViewById(R.id.itemTitle)
         val itemDescription: TextView = view.findViewById(R.id.itemDescription)
+
+        init {
+            view.setOnClickListener {
+                onItemClick(items[adapterPosition])
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {

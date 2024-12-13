@@ -64,11 +64,27 @@ class HomeFragment : Fragment() {
             )
         )
 
-        val adapter = RecommendationAdapter(recommendations)
+        val adapter = RecommendationAdapter(recommendations) { recommendation ->
+            // Navigasi ke DetailActivity
+            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                putExtra(
+                    "menu_item",
+                    com.capstoneproject.model.MenuItem(
+                        imageResId = recommendation.imageRes,
+                        title = recommendation.title,
+                        description = recommendation.description
+                    )
+                )
+            }
+            startActivity(intent)
+        }
+
         binding.recommendationRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.recommendationRecyclerView.adapter = adapter
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

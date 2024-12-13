@@ -118,12 +118,22 @@ class ScanActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+
+
     private fun navigateToResultActivity() {
-        val detectedResult = lastDetectedLabel ?: "No Result"
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra("RESULT", detectedResult)
-        startActivity(intent)
+        val detectedResult = lastDetectedLabel ?: "Unknown"
+
+        if (detectedResult == "Unknown") {
+            // Tampilkan Toast jika hasil tidak dikenali
+            Toast.makeText(this, "Item tidak dikenali, silakan coba lagi.", Toast.LENGTH_SHORT).show()
+        } else {
+            // Navigasi ke ResultActivity jika hasil dikenali
+            val intent = Intent(this, ResultActivity::class.java)
+            intent.putExtra("RESULT", detectedResult)
+            startActivity(intent)
+        }
     }
+
 
     private fun hideSystemUI() {
         @Suppress("DEPRECATION")

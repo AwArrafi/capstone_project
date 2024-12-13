@@ -23,6 +23,9 @@
         android:theme="@style/Theme.CapstoneProject"
         tools:targetApi="31">
         <activity
+            android:name=".ui.DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ResultActivity"
             android:exported="false" />
         <activity

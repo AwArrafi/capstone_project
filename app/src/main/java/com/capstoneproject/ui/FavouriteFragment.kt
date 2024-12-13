@@ -1,5 +1,6 @@
 package com.capstoneproject.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstoneproject.R
 import com.capstoneproject.adapter.FavouriteAdapter
-import com.capstoneproject.adapter.FavouriteItem
+import com.capstoneproject.model.FavouriteItem
 import com.capstoneproject.databinding.FragmentFavouriteBinding
+import com.capstoneproject.ui.DetailActivity
 
 class FavouriteFragment : Fragment() {
 
@@ -29,14 +31,24 @@ class FavouriteFragment : Fragment() {
 
         // Data untuk favourite
         val favouriteItems = listOf(
-            FavouriteItem(R.drawable.telur, "Telur", "Telur segar dari peternakan"),
-            FavouriteItem(R.drawable.pangsit, "Pangsit", "Pangsit renyah dengan isian ayam"),
-            FavouriteItem(R.drawable.fruits, "Buah-buahan", "Buah segar untuk kebutuhan sehari-hari")
+            FavouriteItem(R.drawable.telur, "Eggs", "Freshly cooked eggs"),
+            FavouriteItem(R.drawable.pangsit, "Dumplings", "Soft and crispy dumplings"),
+            FavouriteItem(R.drawable.fruits, "Fruits", "Fresh and juicy fruits")
         )
 
-        // Setup RecyclerView
+        // Setup RecyclerView dengan adapter
         binding.recyclerViewFavorite.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewFavorite.adapter = FavouriteAdapter(favouriteItems)
+        binding.recyclerViewFavorite.adapter = FavouriteAdapter(requireContext(), favouriteItems) { favouriteItem ->
+            // Click listener: Navigate to DetailActivity and pass the FavouriteItem
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra("favourite_item", favouriteItem)
+            startActivity(intent)
+        }
+
+        binding.profileButton.setOnClickListener {
+            val intent = Intent(requireContext(), ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {
